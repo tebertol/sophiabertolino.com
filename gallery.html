@@ -10,6 +10,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 
+<style>
+/* Gallery — full images, no cropping, packed into columns */
+.gallery .masonry{
+  column-count:3;column-gap:14px;margin:0;
+  display:block;grid-template-columns:none;grid-auto-rows:auto;
+}
+.gallery .tile{
+  display:block;width:100%;margin:0 0 14px;break-inside:avoid;
+  overflow:hidden;border-radius:2px;background:#e8e2d8;
+  grid-column:auto;grid-row:auto;
+}
+.gallery .tile img{
+  width:100%;height:auto;display:block;filter:grayscale(6%);
+  transition:transform .6s ease,filter .4s ease;
+}
+.gallery .tile:hover img{transform:scale(1.03);filter:grayscale(0)}
+@media(max-width:900px){.gallery .masonry{column-count:2}}
+@media(max-width:560px){.gallery .masonry{column-count:1}}
+</style>
 </head>
 <body>
 <header class="site-header" id="siteHeader">
@@ -69,7 +88,6 @@
         <a class="tile" href="assets/gallery/IMG_4184.jpeg"><img src="assets/gallery/IMG_4184.jpeg" alt="Sophia Bertolino" loading="lazy"></a>
         <a class="tile" href="assets/gallery/IMG_4114.jpeg"><img src="assets/gallery/IMG_4114.jpeg" alt="Sophia Bertolino" loading="lazy"></a>
         <a class="tile" href="assets/gallery/IMG_4223.jpeg"><img src="assets/gallery/IMG_4223.jpeg" alt="Sophia Bertolino" loading="lazy"></a>
-        <a class="tile" href="assets/gallery/IMG_4232-2.jpeg"><img src="assets/gallery/IMG_4232-2.jpeg" alt="Sophia Bertolino" loading="lazy"></a>
         <a class="tile" href="assets/gallery/IMG_4220.jpeg"><img src="assets/gallery/IMG_4220.jpeg" alt="Sophia Bertolino" loading="lazy"></a>
       </div>
 
@@ -118,6 +136,7 @@
         <a class="tile" href="assets/gallery/IMG_6822.jpeg"><img src="assets/gallery/IMG_6822.jpeg" alt="Sophia Bertolino" loading="lazy"></a>
         <a class="tile" href="assets/gallery/IMG_6819.jpeg"><img src="assets/gallery/IMG_6819.jpeg" alt="Sophia Bertolino" loading="lazy"></a>
       </div>
+
   </main>
   <div class="lightbox" id="lightbox"><span class="lb-close">&times;</span><img id="lbImg" src="" alt=""></div>
   <footer class="site-footer">
