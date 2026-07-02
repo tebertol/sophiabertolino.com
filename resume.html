@@ -10,6 +10,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 
+<style>
+/* Résumé rendered as a crisp, responsive image-like page (no PDF-viewer chrome) */
+.pdf-doc{
+  display:flex;flex-direction:column;align-items:center;gap:18px;
+  width:100%;
+}
+.pdf-doc canvas.pdf-page{
+  width:100%;height:auto;max-width:850px;display:block;
+  background:#fff;border-radius:2px;
+  box-shadow:0 2px 22px rgba(0,0,0,.14);
+}
+.pdf-loading,.pdf-fallback{
+  color:var(--muted);text-align:center;padding:40px 0;font-size:.95rem;
+}
+</style>
 </head>
 <body>
 <header class="site-header" id="siteHeader">
@@ -31,9 +46,7 @@
 <main class="page narrow">
     <h2>Resume</h2>
     <p class="download-row"><a class="btn" href="assets/files/Sophia_Bertolino_Resume.pdf" target="_blank" rel="noopener">&#128196; Download PDF</a></p>
-    <div class="pdf-wrap">
-      <iframe src="assets/files/Sophia_Bertolino_Resume.pdf#view=FitH" title="Sophia Bertolino Resume"></iframe>
-    </div>
+    <div id="pdfContainer" class="pdf-doc"><p class="pdf-loading">Loading résumé…</p></div>
   </main>
   <footer class="site-footer">
     <div class="socials ">
@@ -44,5 +57,44 @@
     <p class="copyright">&copy; 2026 Sophia Bertolino</p>
   </footer>
 <script src="assets/script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(function () {
+  var url = 'assets/files/Sophia_Bertolino_Resume.pdf';
+  var container = document.getElementById('pdfContainer');
+  if (!window.pdfjsLib) { return; }
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  pdfjsLib.getDocument(url).promise.then(function (pdf) {
+    container.innerHTML = '';
+    var chain = Promise.resolve();
+    for (var n = 1; n <= pdf.numPages; n++) {
+      (function (pageNum) {
+        chain = chain.then(function () {
+          return pdf.getPage(pageNum).then(function (page) {
+            var scale = 2; // render at 2x for sharpness on high-res screens
+            var viewport = page.getViewport({ scale: scale });
+            var canvas = document.createElement('canvas');
+            canvas.className = 'pdf-page';
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            container.appendChild(canvas);
+            return page.render({
+              canvasContext: canvas.getContext('2d'),
+              viewport: viewport
+            }).promise;
+          });
+        });
+      })(n);
+    }
+    return chain;
+  }).catch(function (err) {
+    console.error(err);
+    container.innerHTML =
+      '<p class="pdf-fallback">The r\u00e9sum\u00e9 preview couldn\'t load here \u2014 please use the Download PDF button above.</p>';
+  });
+})();
+</script>
 </body>
 </html>
